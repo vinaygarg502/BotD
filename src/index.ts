@@ -38,7 +38,9 @@ export async function load({ monitoring = true }: Readonly<LoadOptions> = {}): P
     monitor()
   }
   const detector = new BotDetector()
-  await detector.collect()
+  const data = await detector.collect()
+  console.log(data)
+  detector.createHash()
   return detector
 }
 

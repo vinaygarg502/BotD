@@ -1,5 +1,7 @@
 import { detectors } from './detectors'
 import { sources } from './sources'
+import shortAbbrevations from './utils/abbrMap'
+import generateHash from './utils/sha'
 import {
   BotdError,
   BotDetectionResult,
@@ -86,35 +88,51 @@ export default class BotDetector implements BotDetectorInterface {
   public async collect(): Promise<ComponentDict> {
     const sources = this.getSources()
     const components = {} as ComponentDict
+    const encryptedHash: any = {}
 
     const sourcesKeys = Object.keys(sources) as (keyof typeof sources)[]
 
     await Promise.all(
       sourcesKeys.map(async (sourceKey) => {
         const res = sources[sourceKey]
-
+        console.log(shortAbbrevations)
+        const encryptedKey: any = Promise.resolve(shortAbbrevations[sourceKey]).then((key) => key)
+        console.log(encryptedKey)
         try {
-          components[sourceKey] = ({
-            value: await res(),
+          const result = await res()
+          components[sourceKey] = {
+            value: result,
             state: State.Success,
-          } as Component<any>) as any
+          } as Component<any> as any
+
+          encryptedHash[encryptedKey] = result
         } catch (error) {
           if (error instanceof BotdError) {
+            const detailedErrorMsg = `${error.name}: ${error.message}`
             components[sourceKey] = {
               state: error.state,
-              error: `${error.name}: ${error.message}`,
+              error: detailedErrorMsg,
             }
+            encryptedHash[encryptedKey] = detailedErrorMsg
           } else {
+            const detailedErrorMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
             components[sourceKey] = {
               state: State.UnexpectedBehaviour,
-              error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+              error: detailedErrorMsg,
             }
+            encryptedHash[encryptedKey] = detailedErrorMsg
           }
         }
       }),
     )
 
     this.components = components
-    return this.components
+    return encryptedHash
+  }
+  public async createHash(keys = 'abcdef') {
+    const keysHash: any = { ab: 'hello', cd: 'bye', ef: 'later' }
+    const keysMap: any = keys.match(/.{1,2}/g)
+    const data = await Promise.all(keysMap?.map((key: any) => generateHash(keysHash[key])))
+    console.log(data)
   }
 }

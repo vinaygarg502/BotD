@@ -1,5 +1,5 @@
 {
-  "name": "@fingerprintjs/botd",
+  "name": "BotD",
   "version": "1.5.0",
   "description": "botd is a browser library for JavaScript bot detection",
   "keywords": [
@@ -18,15 +18,14 @@
   "module": "dist/botd.esm.js",
   "types": "dist/botd.d.ts",
   "license": "MIT",
-  "author": "FingerprintJS, Inc (https://fingerprint.com)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fingerprintjs/botd.git"
+    "url": "https://github.com/vinaygarg502/BotD.git"
   },
   "bugs": {
-    "url": "https://github.com/fingerprintjs/botd/issues"
+    "url": ""
   },
-  "homepage": "https://fingerprintjs.github.io/BotD/",
+  "homepage": "",
   "files": [
     "dist"
   ],
@@ -57,6 +56,7 @@
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "ajv": "^7.2.4",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
@@ -83,9 +83,9 @@
     "ts-loader": "^9.4.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.3",
-    "webpack": "^5.74.0",
+    "webpack": "^5.82.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.11.0",
+    "webpack-dev-server": "^4.15.0",
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {

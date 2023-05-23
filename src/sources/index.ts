@@ -17,6 +17,9 @@ import getWebGL from './webgl'
 import getWindowExternal from './window_external'
 import getWindowSize, { WindowSizePayload } from './window_size'
 import checkDistinctiveProperties from './distinctive_properties'
+import getBatteryLevel from './battery_level'
+import checkLocalStorage from './has_ls'
+import checkSessionStorage from './hs_ss'
 
 export const sources = {
   userAgent: getUserAgent,
@@ -38,6 +41,9 @@ export const sources = {
   functionBind: getFunctionBind,
   process: getProcess,
   distinctiveProps: checkDistinctiveProperties,
+  batteryInstance: getBatteryLevel,
+  isLocalStorage: checkLocalStorage,
+  isSessionStorage: checkSessionStorage,
 }
 
 export { WindowSizePayload, ProcessPayload }
