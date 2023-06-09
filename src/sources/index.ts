@@ -20,6 +20,8 @@ import checkDistinctiveProperties from './distinctive_properties'
 import getBatteryLevel from './battery_level'
 import checkLocalStorage from './has_ls'
 import checkSessionStorage from './hs_ss'
+import timezone from './time_zone'
+import touchEventFp from './touchEvent'
 
 export const sources = {
   userAgent: getUserAgent,
@@ -44,6 +46,8 @@ export const sources = {
   batteryInstance: getBatteryLevel,
   isLocalStorage: checkLocalStorage,
   isSessionStorage: checkSessionStorage,
+  timezone: timezone,
+  touchEventFp: touchEventFp,
 }
 
 export { WindowSizePayload, ProcessPayload }

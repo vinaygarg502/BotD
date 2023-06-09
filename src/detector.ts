@@ -1,5 +1,6 @@
 import { detectors } from './detectors'
 import { sources } from './sources'
+import { fingerprint } from './utils/getFpId'
 import shortAbbrevations from './utils/abbrMap'
 import generateHash from './utils/sha'
 import {
@@ -40,6 +41,10 @@ export default class BotDetector implements BotDetectorInterface {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   protected getDetectors() {
     return detectors
+  }
+
+  protected getFpId() {
+    return fingerprint.uid
   }
 
   /**
@@ -88,16 +93,14 @@ export default class BotDetector implements BotDetectorInterface {
   public async collect(): Promise<ComponentDict> {
     const sources = this.getSources()
     const components = {} as ComponentDict
-    const encryptedHash: any = {}
+    const abbrevetedHash: any = {}
 
     const sourcesKeys = Object.keys(sources) as (keyof typeof sources)[]
 
     await Promise.all(
       sourcesKeys.map(async (sourceKey) => {
         const res = sources[sourceKey]
-        console.log(shortAbbrevations)
-        const encryptedKey: any = Promise.resolve(shortAbbrevations[sourceKey]).then((key) => key)
-        console.log(encryptedKey)
+        const encryptedKey: any = shortAbbrevations[sourceKey]
         try {
           const result = await res()
           components[sourceKey] = {
@@ -105,7 +108,7 @@ export default class BotDetector implements BotDetectorInterface {
             state: State.Success,
           } as Component<any> as any
 
-          encryptedHash[encryptedKey] = result
+          abbrevetedHash[encryptedKey] = result
         } catch (error) {
           if (error instanceof BotdError) {
             const detailedErrorMsg = `${error.name}: ${error.message}`
@@ -113,26 +116,31 @@ export default class BotDetector implements BotDetectorInterface {
               state: error.state,
               error: detailedErrorMsg,
             }
-            encryptedHash[encryptedKey] = detailedErrorMsg
+            abbrevetedHash[encryptedKey] = detailedErrorMsg
           } else {
             const detailedErrorMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
             components[sourceKey] = {
               state: State.UnexpectedBehaviour,
               error: detailedErrorMsg,
             }
-            encryptedHash[encryptedKey] = detailedErrorMsg
+            abbrevetedHash[encryptedKey] = detailedErrorMsg
           }
         }
       }),
     )
+    abbrevetedHash.uid = this.getFpId()
 
     this.components = components
-    return encryptedHash
+    console.log(this.components, abbrevetedHash)
+    return abbrevetedHash
   }
   public async createHash(keys = 'abcdef') {
+    let fpKeysValue = ''
     const keysHash: any = { ab: 'hello', cd: 'bye', ef: 'later' }
     const keysMap: any = keys.match(/.{1,2}/g)
-    const data = await Promise.all(keysMap?.map((key: any) => generateHash(keysHash[key])))
+    const joinValues = keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + keysHash[key]))
+    const data = await generateHash(joinValues)
     console.log(data)
+    return data
   }
 }
