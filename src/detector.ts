@@ -139,7 +139,7 @@ export default class BotDetector implements BotDetectorInterface {
     const keysHash: any = { ab: 'hello', cd: 'bye', ef: 'later' }
     const keysMap: any = keys.match(/.{1,2}/g)
     const joinValues = keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + keysHash[key]))
-    const data = await generateHash(joinValues)
+    const data = await generateHash('salt', joinValues)
     console.log(data)
     return data
   }

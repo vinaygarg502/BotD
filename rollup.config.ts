@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import type { RollupOptions } from 'rollup'
 import jsonPlugin from '@rollup/plugin-json'
+// import terser from '@rollup/plugin-terser'
 import nodeResolvePlugin from '@rollup/plugin-node-resolve'
 import typescriptPlugin from '@rollup/plugin-typescript'
 import dtsPlugin from 'rollup-plugin-dts'
@@ -19,6 +20,7 @@ export const commonOutput = {
   name: 'BotD',
   exports: 'named' as const,
   plugins: [
+    // terser(),
     licensePlugin({
       banner: {
         content: {
