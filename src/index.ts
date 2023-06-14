@@ -17,30 +17,9 @@ export interface LoadOptions {
 /**
  * Sends an unpersonalized AJAX request to collect installation statistics
  */
-function monitor() {
-  // The FingerprintJS CDN (https://github.com/fingerprintjs/cdn) replaces `window.__fpjs_d_m` with `true`
-  if (window.__fpjs_d_m || Math.random() >= 0.001) {
-    return
-  }
-  try {
-    const request = new XMLHttpRequest()
-    request.open('get', `https://m1.openfpcdn.io/botd/v${version}/npm-monitoring`, true)
-    request.send()
-  } catch (error) {
-    // console.error is ok here because it's an unexpected error handler
-    // eslint-disable-next-line no-console
-    console.error(error)
-  }
-}
 
-export async function load({ monitoring = true }: Readonly<LoadOptions> = {}): Promise<BotDetectorInterface> {
-  if (monitoring) {
-    monitor()
-  }
+export async function load(): Promise<BotDetectorInterface> {
   const detector = new BotDetector()
-  const data = await detector.collect()
-  console.log(data)
-  detector.createHash()
   return detector
 }
 

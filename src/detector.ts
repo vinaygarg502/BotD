@@ -108,7 +108,7 @@ export default class BotDetector implements BotDetectorInterface {
             state: State.Success,
           } as Component<any> as any
 
-          abbrevetedHash[encryptedKey] = result
+          abbrevetedHash[encryptedKey] = JSON.stringify(result)
         } catch (error) {
           if (error instanceof BotdError) {
             const detailedErrorMsg = `${error.name}: ${error.message}`
@@ -116,14 +116,14 @@ export default class BotDetector implements BotDetectorInterface {
               state: error.state,
               error: detailedErrorMsg,
             }
-            abbrevetedHash[encryptedKey] = detailedErrorMsg
+            abbrevetedHash[encryptedKey] = JSON.stringify(detailedErrorMsg)
           } else {
             const detailedErrorMsg = error instanceof Error ? `${error.name}: ${error.message}` : String(error)
             components[sourceKey] = {
               state: State.UnexpectedBehaviour,
               error: detailedErrorMsg,
             }
-            abbrevetedHash[encryptedKey] = detailedErrorMsg
+            abbrevetedHash[encryptedKey] = JSON.stringify(detailedErrorMsg)
           }
         }
       }),
@@ -136,7 +136,7 @@ export default class BotDetector implements BotDetectorInterface {
   }
   public async createHash(keys = 'abcdef') {
     let fpKeysValue = ''
-    const keysHash: any = { ab: 'hello', cd: 'bye', ef: 'later' }
+    const keysHash: any = { ab: { b: 1 }, cd: { d: 2 }, ef: { e: 3 } }
     const keysMap: any = keys.match(/.{1,2}/g)
     const joinValues = keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + keysHash[key]))
     const data = await generateHash('salt', joinValues)
