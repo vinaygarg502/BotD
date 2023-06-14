@@ -25,6 +25,8 @@ export default class BotDetector implements BotDetectorInterface {
 
   protected detections: DetectionDict | undefined = undefined
 
+  protected abbrevetedHash: any = undefined
+
   public getComponents(): ComponentDict | undefined {
     return this.components
   }
@@ -131,16 +133,14 @@ export default class BotDetector implements BotDetectorInterface {
     abbrevetedHash.uid = this.getFpId()
 
     this.components = components
-    console.log(this.components, abbrevetedHash)
+    this.abbrevetedHash = abbrevetedHash
     return abbrevetedHash
   }
-  public async createHash(keys = 'abcdef') {
+  public async createHash(keys) {
     let fpKeysValue = ''
-    const keysHash: any = { ab: { b: 1 }, cd: { d: 2 }, ef: { e: 3 } }
     const keysMap: any = keys.match(/.{1,2}/g)
-    const joinValues = keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + keysHash[key]))
+    const joinValues = keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + this.abbrevetedHash[key]))
     const data = await generateHash('salt', joinValues)
-    console.log(data)
     return data
   }
 }
