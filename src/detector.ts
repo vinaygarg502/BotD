@@ -136,11 +136,18 @@ export default class BotDetector implements BotDetectorInterface {
     this.abbrevetedHash = abbrevetedHash
     return abbrevetedHash
   }
-  public async createHash(hashMap, keys): Promise<any> {
+  public async createHash(hashMap, response, secretKey): Promise<any> {
+    const [fingerPrintHashMap, serverHashMap] = response
+    const fpKeys = Object.keys(fingerPrintHashMap)[0]
     let fpKeysValue = ''
-    const keysMap: any = keys.match(/.{1,2}/g)
+    const keysMap: any = fpKeys.match(/.{1,2}/g)
     keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + hashMap[key]))
-    const data = await generateHash('salt', fpKeysValue)
+    for (const key in serverHashMap) {
+      fpKeysValue += serverHashMap[key]
+    }
+    const data = await generateHash(secretKey, fpKeysValue)
     return data
+    // const keysMap: any = keys.match(/.{1,2}/g)
+    // keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + hashMap[key]))
   }
 }
