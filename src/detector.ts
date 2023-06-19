@@ -136,18 +136,35 @@ export default class BotDetector implements BotDetectorInterface {
     this.abbrevetedHash = abbrevetedHash
     return abbrevetedHash
   }
-  public async createHash(hashMap, response, secretKey): Promise<any> {
-    const [fingerPrintHashMap, serverHashMap] = response
-    const fpKeys = Object.keys(fingerPrintHashMap)[0]
-    let fpKeysValue = ''
-    const keysMap: any = fpKeys.match(/.{1,2}/g)
-    keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + hashMap[key]))
-    for (const key in serverHashMap) {
-      fpKeysValue += serverHashMap[key]
-    }
+  public async createHash(clientMap, response, secretKey): Promise<any> {
+    const [encryptedCodeValue, serverMap] = response
+    const encryptedKeys = Object.keys(encryptedCodeValue)[0]
+    const fpKeysValue = this.getdecryptedKeys({ index: 0, encryptedKeys, fpKeysValue: '', serverMap, clientMap })
+
     const data = await generateHash(secretKey, fpKeysValue)
     return data
-    // const keysMap: any = keys.match(/.{1,2}/g)
-    // keysMap?.forEach((key: any) => (fpKeysValue = fpKeysValue + hashMap[key]))
+  }
+  public getdecryptedKeys({ index, encryptedKeys, fpKeysValue, serverMap, clientMap }) {
+    let isStringComplete = false
+    let startIndex = index
+    if (encryptedKeys.startsWith('$', index)) {
+      fpKeysValue += serverMap[encryptedKeys.slice(index + 1, index + 4)]
+      startIndex = index + 4
+      if (startIndex === encryptedKeys.length) {
+        isStringComplete = true
+      }
+    } else {
+      fpKeysValue += clientMap[encryptedKeys.slice(index, index + 2)]
+      startIndex = index + 2
+      if (startIndex === encryptedKeys.length) {
+        isStringComplete = true
+      }
+    }
+
+    if (isStringComplete) {
+      return fpKeysValue
+    } else {
+      return this.getdecryptedKeys({ index: startIndex, encryptedKeys, fpKeysValue, serverMap, clientMap })
+    }
   }
 }
