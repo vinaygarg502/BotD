@@ -137,34 +137,33 @@ export default class BotDetector implements BotDetectorInterface {
     return abbrevetedHash
   }
   public async createHash(clientMap, response, secretKey): Promise<any> {
-    const [encryptedCodeValue, serverMap] = response
+    const [serverMap, encryptedCodeValue] = response
     const encryptedKeys = Object.keys(encryptedCodeValue)[0]
-    const fpKeysValue = this.getdecryptedKeys({ index: 0, encryptedKeys, fpKeysValue: '', serverMap, clientMap })
+    const fpKeysValue = this.getdecryptedKeys({
+      encryptedKeys,
+      fpKeysValue: '',
+      serverMap,
+      clientMap,
+      char: ['$', '_'],
+    })
 
     const data = await generateHash(secretKey, fpKeysValue)
     return data
   }
-  public getdecryptedKeys({ index, encryptedKeys, fpKeysValue, serverMap, clientMap }) {
-    let isStringComplete = false
-    let startIndex = index
-    if (encryptedKeys.startsWith('$', index)) {
-      fpKeysValue += serverMap[encryptedKeys.slice(index + 1, index + 4)]
-      startIndex = index + 4
-      if (startIndex === encryptedKeys.length) {
-        isStringComplete = true
-      }
+  public getdecryptedKeys({ encryptedKeys, fpKeysValue, serverMap, clientMap, char }) {
+    const [serverIdentifier, clientIdentifier] = char
+    const serverIdentifierIndex = encryptedKeys.lastIndexOf(serverIdentifier)
+    const clientIdentifierIndex = encryptedKeys.lastIndexOf(clientIdentifier)
+    if (serverIdentifierIndex > clientIdentifierIndex) {
+      fpKeysValue = serverMap[encryptedKeys.slice(serverIdentifierIndex + 1, encryptedKeys.length)] + fpKeysValue
+      encryptedKeys = encryptedKeys.slice(0, serverIdentifierIndex)
     } else {
-      fpKeysValue += clientMap[encryptedKeys.slice(index, index + 2)]
-      startIndex = index + 2
-      if (startIndex === encryptedKeys.length) {
-        isStringComplete = true
-      }
+      fpKeysValue = clientMap[encryptedKeys.slice(clientIdentifierIndex + 1, encryptedKeys.length)] + fpKeysValue
+      encryptedKeys = encryptedKeys.slice(0, clientIdentifierIndex)
     }
-
-    if (isStringComplete) {
-      return fpKeysValue
-    } else {
-      return this.getdecryptedKeys({ index: startIndex, encryptedKeys, fpKeysValue, serverMap, clientMap })
+    if (encryptedKeys.length > 0) {
+      return this.getdecryptedKeys({ encryptedKeys, fpKeysValue, serverMap, clientMap, char })
     }
+    return fpKeysValue
   }
 }
