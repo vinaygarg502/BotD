@@ -18,7 +18,7 @@ import { detectWindowSize } from './window_size'
 import { detectDistinctiveProperties } from './distinctive_properties'
 import { detectBatteryLevel } from './battery_level'
 import { detectLocalSorage } from './has_ls'
-import { detectSessionSorage } from './hs_ss'
+// import { detectSessionSorage } from './hs_ss'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const detectors = {
@@ -42,5 +42,5 @@ export const detectors = {
   detectDistinctiveProperties,
   detectBatteryLevel,
   detectLocalSorage,
-  detectSessionSorage,
+  // detectSessionSorage,
 }

@@ -1,7 +1,7 @@
 declare let window: any
-const checkLocalStorage = (): string => {
+const checkLocalStorage = (): boolean => {
   const localStorage = window.localStorage
-  return localStorage
+  return localStorage ? true : false
 }
 
 export default checkLocalStorage

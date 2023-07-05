@@ -19,7 +19,16 @@ import getWindowSize, { WindowSizePayload } from './window_size'
 import checkDistinctiveProperties from './distinctive_properties'
 import getBatteryLevel from './battery_level'
 import checkLocalStorage from './has_ls'
-import checkSessionStorage from './hs_ss'
+import getabsmall from './ab_vwo'
+import isAddress from './isAddress'
+import isLocationPermission from './location_permission'
+import getPaymentUrl from './payment_url'
+import previousScreen from './previous_screen'
+import serviceWorkerVersion from './service_worker'
+import getSpeechRecognition from './speech_recogntion'
+import getStoreId from './store_id'
+
+// import checkSessionStorage from './hs_ss'
 import timezone from './time_zone'
 import touchEventFp from './touchEvent'
 
@@ -45,7 +54,15 @@ export const sources = {
   distinctiveProps: checkDistinctiveProperties,
   batteryInstance: getBatteryLevel,
   isLocalStorage: checkLocalStorage,
-  isSessionStorage: checkSessionStorage,
+  getabsmall,
+  getSpeechRecognition,
+  paymentUrl: getPaymentUrl,
+  previousScreen: previousScreen,
+  isLocationPermissionGiven: isLocationPermission,
+  serviceWorkerUpdated: serviceWorkerVersion,
+  storeId: getStoreId,
+  isAddressOnCart: isAddress,
+  // isSessionStorage: checkSessionStorage,
   timezone: timezone,
   touchEventFp: touchEventFp,
 }
